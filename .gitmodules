@@ -1,0 +1,3 @@
+[submodule "module/target_traits"]
+	path = module/target_traits
+	url = git://github.com/SHyx0rmZ/cpp11hacks.git
