@@ -3,6 +3,7 @@
 
 #include "module/target_traits/target_traits.hpp"
 #include <stdexcept>
+#include <string>
 
 using namespace std;
 using namespace shy;
@@ -17,6 +18,7 @@ namespace rk
 		virtual bool swap();
 	};
 
+	#if defined(SHY_TARGET_SYSTEM_LINUX)
 	namespace linux
 	{
 		struct Window
@@ -28,7 +30,9 @@ namespace rk
 			XVisualInfo *visual;
 		};
 	}
+	#endif
 
+	#if defined(SHY_TARGET_SYSTEM_WINDOWS)
 	namespace windows
 	{
 		struct Window
@@ -39,15 +43,17 @@ namespace rk
 			HINSTANCE instance;
 		};
 	}
+	#endif
 
 	Window &CreateWindow(const string &title, unsigned int width, unsigned height)
 	{
-		if (target_system_is_linux<>::value)
-			return linux::Window(title, width, height);
-		else if (target_system_is_windows<>::value)
-			return windows::Window(title, width, height);
-		else
-			throw runtime_error("Can't create window for current target system");
+		#if defined(SHY_TARGET_SYSTEM_LINUX)
+		return linux::Window(title, width, height);
+		#elif defined(SHY_TARGET_SYSTEM_WINDOWS)
+		return windows::Window(title, width, height);
+		#else
+		throw runtime_error("Can't create window for current target system");
+		#endif
 	}
 }
 
